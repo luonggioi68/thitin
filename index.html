@@ -9,9 +9,12 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden; /* Ẩn thanh cuộn của trang chính */
+            overflow: hidden;
+            background-color: #f0f0f0;
+            font-family: sans-serif;
         }
         
+        /* CSS cho khung chứa Iframe */
         .iframe-container {
             position: absolute;
             top: 0;
@@ -19,29 +22,86 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            display: none; /* Ẩn đi lúc đầu, chờ bấm nút */
         }
 
         iframe {
             width: 100%;
-            height: 100vh; /* Chiều cao 100% màn hình */
+            height: 100vh;
             border: none;
-            
-            /* MẤU CHỐT: Đẩy iframe lên trên để che thanh thông báo */
-            /* Thanh thông báo Google thường cao khoảng 25px-40px */
-            /* Ta sẽ đẩy lên -40px để che nó đi */
+            /* Đẩy lên để che thanh thông báo Google */
             position: relative;
             top: -40px; 
-            
-            /* Tăng chiều cao lên để bù lại phần bị cắt */
             height: calc(100vh + 40px); 
+        }
+
+        /* CSS cho nút Bắt đầu (Overlay) */
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: 999;
+            background: white;
+        }
+
+        .btn-start {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #007bff; /* Màu xanh */
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+
+        .btn-start:active {
+            transform: scale(0.95);
+        }
+        
+        .note {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <div class="iframe-container">
-        <iframe src="https://script.google.com/macros/s/AKfycbwmUWjACBTLSXr1If1LddG0RSmDpkgvquW6Ojzbbdunq72BPSyJw8gl6IYADAh_H5qa/exec" allow="autoplay"></iframe>
+    <div id="start-screen">
+        <button class="btn-start" onclick="goFullScreen()">BẮT ĐẦU MỞ TRANG</button>
+        <p class="note">Nhấn nút để xem toàn màn hình</p>
     </div>
+
+    <div class="iframe-container" id="main-content">
+        <iframe src="https://script.google.com/macros/s/AKfycbxH_eLAwLDPIlco9YUlxNQwR2zrPiCcMFBNY4MuRme-JPEAQ7P4tu8SbQahA5Q98vsd/exec" allow="autoplay; fullscreen"></iframe>
+    </div>
+
+    <script>
+        function goFullScreen() {
+            var elem = document.documentElement;
+            var startScreen = document.getElementById("start-screen");
+            var mainContent = document.getElementById("main-content");
+
+            // 1. Yêu cầu trình duyệt mở Full màn hình
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+
+            // 2. Ẩn nút bắt đầu, hiện nội dung web
+            startScreen.style.display = "none";
+            mainContent.style.display = "block";
+        }
+    </script>
 
 </body>
 </html>
